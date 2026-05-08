@@ -1,0 +1,22 @@
+description: Generate a token restricted to one repository and a smaller permission set.
+
+usage:
+  version: 2.1
+  orbs:
+    app-token: ydah/github-app-token@x.y.z
+
+  jobs:
+    restricted-token:
+      docker:
+        - image: cimg/node:lts
+      steps:
+        - checkout
+        - app-token/create:
+            permissions: '{"contents":"write","pull_requests":"write"}'
+            repositories: "${CIRCLE_PROJECT_REPONAME}"
+            token_env_var: GH_APP_TOKEN
+
+  workflows:
+    restricted-token:
+      jobs:
+        - restricted-token

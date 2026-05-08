@@ -1,0 +1,14 @@
+{
+  "token": "ghs_example_token",
+  "expires_at": "2026-05-08T12:34:56Z",
+  "repository_selection": "selected",
+  "permissions": {
+    "contents": "write",
+    "pull_requests": "write"
+  },
+  "repositories": [
+    {
+      "name": "repo-a"
+    }
+  ]
+}

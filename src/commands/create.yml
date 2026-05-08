@@ -1,0 +1,119 @@
+description: Generate a GitHub App installation access token and export it for later steps.
+
+parameters:
+  app_id:
+    type: string
+    default: ""
+    description: GitHub App ID. When empty, the value is read from app_id_env_var.
+  app_id_env_var:
+    type: string
+    default: GITHUB_APP_ID
+    description: Environment variable name that stores the GitHub App ID.
+  private_key_env_var:
+    type: string
+    default: GITHUB_APP_PRIVATE_KEY
+    description: Environment variable name that stores the GitHub App private key.
+  private_key_base64:
+    type: boolean
+    default: false
+    description: Decode the private key environment variable from base64 before use.
+  installation_id:
+    type: string
+    default: ""
+    description: GitHub App installation ID. When empty, the ID is read from installation_id_env_var or inferred.
+  installation_id_env_var:
+    type: string
+    default: GITHUB_APP_INSTALLATION_ID
+    description: Environment variable name that stores the GitHub App installation ID.
+  owner:
+    type: string
+    default: "${CIRCLE_PROJECT_USERNAME}"
+    description: Repository owner used for installation lookup.
+  repo:
+    type: string
+    default: "${CIRCLE_PROJECT_REPONAME}"
+    description: Repository name used for installation lookup.
+  installation_lookup:
+    type: enum
+    enum:
+      - repo
+      - org
+      - user
+      - app-list
+      - none
+    default: repo
+    description: Strategy used to infer the installation ID when no explicit ID is available.
+  repositories:
+    type: string
+    default: ""
+    description: Comma-separated repository names used to restrict the token.
+  repository_ids:
+    type: string
+    default: ""
+    description: Comma-separated repository IDs used to restrict the token.
+  permissions:
+    type: string
+    default: ""
+    description: JSON object used to restrict token permissions.
+  github_api_url:
+    type: string
+    default: https://api.github.com
+    description: GitHub REST API base URL.
+  github_api_version:
+    type: string
+    default: "2026-03-10"
+    description: GitHub REST API version header value.
+  token_env_var:
+    type: string
+    default: GH_APP_TOKEN
+    description: Environment variable name used to export the generated token.
+  export_env_prefix:
+    type: string
+    default: GH_APP
+    description: Prefix used for exported metadata environment variables.
+  output_json:
+    type: string
+    default: /tmp/github-app-token-result.json
+    description: Path where token metadata JSON is written.
+  include_token_in_output_json:
+    type: boolean
+    default: false
+    description: Include the generated token in output_json.
+  configure_git:
+    type: boolean
+    default: false
+    description: Configure the current Git remote to authenticate with the generated token.
+  git_remote:
+    type: string
+    default: origin
+    description: Git remote name configured when configure_git is true.
+
+steps:
+  - run:
+      name: Generate GitHub App installation token
+      environment:
+        GITHUB_APP_TOKEN_APP_ID: << parameters.app_id >>
+        GITHUB_APP_TOKEN_APP_ID_ENV_VAR: << parameters.app_id_env_var >>
+        GITHUB_APP_TOKEN_PRIVATE_KEY_ENV_VAR: << parameters.private_key_env_var >>
+        GITHUB_APP_TOKEN_PRIVATE_KEY_BASE64: << parameters.private_key_base64 >>
+        GITHUB_APP_TOKEN_INSTALLATION_ID: << parameters.installation_id >>
+        GITHUB_APP_TOKEN_INSTALLATION_ID_ENV_VAR: << parameters.installation_id_env_var >>
+        GITHUB_APP_TOKEN_OWNER: << parameters.owner >>
+        GITHUB_APP_TOKEN_REPO: << parameters.repo >>
+        GITHUB_APP_TOKEN_INSTALLATION_LOOKUP: << parameters.installation_lookup >>
+        GITHUB_APP_TOKEN_REPOSITORIES: << parameters.repositories >>
+        GITHUB_APP_TOKEN_REPOSITORY_IDS: << parameters.repository_ids >>
+        GITHUB_APP_TOKEN_PERMISSIONS: << parameters.permissions >>
+        GITHUB_APP_TOKEN_GITHUB_API_URL: << parameters.github_api_url >>
+        GITHUB_APP_TOKEN_GITHUB_API_VERSION: << parameters.github_api_version >>
+        GITHUB_APP_TOKEN_TOKEN_ENV_VAR: << parameters.token_env_var >>
+        GITHUB_APP_TOKEN_EXPORT_ENV_PREFIX: << parameters.export_env_prefix >>
+        GITHUB_APP_TOKEN_OUTPUT_JSON: << parameters.output_json >>
+        GITHUB_APP_TOKEN_INCLUDE_TOKEN_IN_OUTPUT_JSON: << parameters.include_token_in_output_json >>
+        GITHUB_APP_TOKEN_SHOULD_CONFIGURE_GIT: << parameters.configure_git >>
+        GITHUB_APP_TOKEN_CONFIGURE_TOKEN_ENV_VAR: << parameters.token_env_var >>
+        GITHUB_APP_TOKEN_CONFIGURE_REPOSITORY: << parameters.owner >>/<< parameters.repo >>
+        GITHUB_APP_TOKEN_CONFIGURE_GIT_REMOTE: << parameters.git_remote >>
+        GITHUB_APP_TOKEN_CONFIGURE_GITHUB_WEB_URL: https://github.com
+        GITHUB_APP_TOKEN_CONFIGURE_METHOD: askpass
+      command: <<include(scripts/create_command.sh)>>

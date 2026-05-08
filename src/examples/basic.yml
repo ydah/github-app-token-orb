@@ -1,0 +1,31 @@
+description: Generate a token and call the GitHub REST API.
+
+usage:
+  version: 2.1
+  orbs:
+    app-token: ydah/github-app-token@x.y.z
+
+  jobs:
+    use-app-token:
+      docker:
+        - image: cimg/node:lts
+      steps:
+        - checkout
+        - app-token/create:
+            app_id_env_var: GITHUB_APP_ID
+            private_key_env_var: GITHUB_APP_PRIVATE_KEY
+            installation_lookup: repo
+            token_env_var: GH_APP_TOKEN
+        - run:
+            name: Call GitHub API
+            command: |
+              curl -sSfL \
+                -H "Accept: application/vnd.github+json" \
+                -H "Authorization: Bearer ${GH_APP_TOKEN}" \
+                -H "X-GitHub-Api-Version: 2026-03-10" \
+                "https://api.github.com/repos/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}"
+
+  workflows:
+    use-app-token:
+      jobs:
+        - use-app-token

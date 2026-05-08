@@ -1,0 +1,31 @@
+version: 2.1
+
+jobs:
+  test:
+    docker:
+      - image: cimg/node:lts
+    steps:
+      - checkout
+      - run:
+          name: Run unit tests
+          command: npm test
+      - run:
+          name: Run lint checks
+          command: npm run lint
+      - run:
+          name: Pack orb
+          command: npm run pack
+      - run:
+          name: Validate orb when CircleCI CLI is available
+          command: |
+            if command -v circleci >/dev/null 2>&1; then
+              circleci orb validate orb.yml
+              circleci config validate .circleci/config.yml
+            else
+              echo "CircleCI CLI is not available in this image."
+            fi
+
+workflows:
+  test:
+    jobs:
+      - test

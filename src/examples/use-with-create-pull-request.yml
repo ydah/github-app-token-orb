@@ -1,0 +1,26 @@
+description: Use the generated token with a create-pull-request orb.
+
+usage:
+  version: 2.1
+  orbs:
+    app-token: ydah/github-app-token@x.y.z
+    cpr: ydah/create-pull-request@x.y.z
+
+  jobs:
+    open-pull-request:
+      docker:
+        - image: cimg/node:lts
+      steps:
+        - checkout
+        - app-token/create:
+            permissions: '{"contents":"write","pull_requests":"write"}'
+            token_env_var: GH_APP_TOKEN
+        - cpr/create:
+            github_token_env_var: GH_APP_TOKEN
+            base_branch: main
+            branch: chore/generated
+
+  workflows:
+    open-pull-request:
+      jobs:
+        - open-pull-request

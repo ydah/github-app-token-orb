@@ -1,0 +1,37 @@
+description: Configure Git authentication with an already exported GitHub App token.
+
+parameters:
+  token_env_var:
+    type: string
+    default: GH_APP_TOKEN
+    description: Environment variable name that stores the generated token.
+  repository:
+    type: string
+    default: "${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}"
+    description: GitHub repository in owner/repo form.
+  git_remote:
+    type: string
+    default: origin
+    description: Git remote name to configure.
+  github_web_url:
+    type: string
+    default: https://github.com
+    description: GitHub web URL, or the GitHub Enterprise Server web URL.
+  method:
+    type: enum
+    enum:
+      - askpass
+      - remote-url
+    default: askpass
+    description: Authentication method. askpass avoids storing the token in the remote URL.
+
+steps:
+  - run:
+      name: Configure Git authentication
+      environment:
+        GITHUB_APP_TOKEN_CONFIGURE_TOKEN_ENV_VAR: << parameters.token_env_var >>
+        GITHUB_APP_TOKEN_CONFIGURE_REPOSITORY: << parameters.repository >>
+        GITHUB_APP_TOKEN_CONFIGURE_GIT_REMOTE: << parameters.git_remote >>
+        GITHUB_APP_TOKEN_CONFIGURE_GITHUB_WEB_URL: << parameters.github_web_url >>
+        GITHUB_APP_TOKEN_CONFIGURE_METHOD: << parameters.method >>
+      command: <<include(scripts/configure_git.sh)>>

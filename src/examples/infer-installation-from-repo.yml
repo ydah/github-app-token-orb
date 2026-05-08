@@ -1,0 +1,24 @@
+description: Infer the installation from the current CircleCI repository.
+
+usage:
+  version: 2.1
+  orbs:
+    app-token: ydah/github-app-token@x.y.z
+
+  jobs:
+    infer-installation:
+      docker:
+        - image: cimg/node:lts
+      steps:
+        - checkout
+        - app-token/create:
+            installation_lookup: repo
+            token_env_var: GH_APP_TOKEN
+        - run:
+            name: Show token metadata path
+            command: jq . "${GH_APP_OUTPUT_JSON}"
+
+  workflows:
+    infer-installation:
+      jobs:
+        - infer-installation

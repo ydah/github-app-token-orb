@@ -1,0 +1,7 @@
+version: 2.1
+
+description: Generate short-lived GitHub App installation access tokens inside CircleCI jobs.
+
+display:
+  home_url: https://github.com/ydah/github-app-token-orb
+  source_url: https://github.com/ydah/github-app-token-orb
