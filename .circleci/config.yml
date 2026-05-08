@@ -3,18 +3,27 @@ version: 2.1
 jobs:
   test:
     docker:
-      - image: cimg/node:lts
+      - image: cimg/ruby:3.4.8
     steps:
       - checkout
       - run:
           name: Run unit tests
-          command: npm test
+          command: ruby -Itests tests/create_token_test.rb
       - run:
           name: Run lint checks
-          command: npm run lint
+          command: |
+            ruby -c src/scripts/create_token.rb
+            ruby -c src/scripts/configure_git.rb
+            ruby -c scripts/build_command_wrappers.rb
+            ruby -c scripts/pack_orb.rb
+            ruby scripts/build_command_wrappers.rb
+            bash -n src/scripts/create_command.sh
+            bash -n src/scripts/configure_git_command.sh
       - run:
           name: Pack orb
-          command: npm run pack
+          command: |
+            ruby scripts/build_command_wrappers.rb
+            ruby scripts/pack_orb.rb
       - run:
           name: Validate orb when CircleCI CLI is available
           command: |

@@ -4,6 +4,10 @@ Generate short-lived GitHub App installation access tokens inside CircleCI jobs.
 
 This orb provides a CircleCI experience similar to `actions/create-github-app-token` for GitHub Actions. It creates an App JWT from your GitHub App ID and private key, resolves the installation ID when needed, creates an installation access token, exports the token through `$BASH_ENV`, and writes non-secret metadata to JSON.
 
+## Runtime
+
+The `create` and `configure-git` commands require Ruby 3.1 or newer in the job environment. The reusable `create` job uses the bundled `ruby` executor, which runs on `cimg/ruby:3.4.8`.
+
 ## Usage
 
 ```yaml
@@ -15,7 +19,7 @@ orbs:
 jobs:
   use-app-token:
     docker:
-      - image: cimg/node:lts
+      - image: cimg/ruby:3.4.8
     steps:
       - checkout
       - app-token/create:
@@ -139,7 +143,7 @@ Configures the current repository to use an already exported token.
 
 ### `create`
 
-Runs the `create` command in the default Node executor. It accepts all `create` command parameters plus `checkout`, which defaults to `false`.
+Runs the `create` command in the default Ruby executor. It accepts all `create` command parameters plus `checkout`, which defaults to `false`.
 
 ## Installation Lookup
 
@@ -175,9 +179,13 @@ Set `github_api_url` to the API URL and `github_web_url` on `configure-git` when
 ## Development
 
 ```bash
-npm test
-npm run lint
-npm run pack
+ruby -Itests tests/create_token_test.rb
+ruby -c src/scripts/create_token.rb
+ruby -c src/scripts/configure_git.rb
+ruby -c scripts/build_command_wrappers.rb
+ruby -c scripts/pack_orb.rb
+ruby scripts/build_command_wrappers.rb
+ruby scripts/pack_orb.rb
 circleci orb validate orb.yml
 circleci config validate .circleci/config.yml
 ```

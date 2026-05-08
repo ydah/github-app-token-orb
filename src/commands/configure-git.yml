@@ -34,4 +34,4 @@ steps:
         GITHUB_APP_TOKEN_CONFIGURE_GIT_REMOTE: << parameters.git_remote >>
         GITHUB_APP_TOKEN_CONFIGURE_GITHUB_WEB_URL: << parameters.github_web_url >>
         GITHUB_APP_TOKEN_CONFIGURE_METHOD: << parameters.method >>
-      command: <<include(scripts/configure_git.sh)>>
+      command: <<include(scripts/configure_git_command.sh)>>

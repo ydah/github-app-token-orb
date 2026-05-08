@@ -1,6 +1,6 @@
 description: Generate a GitHub App installation access token in a reusable CircleCI job.
 
-executor: node
+executor: ruby
 
 parameters:
   checkout:

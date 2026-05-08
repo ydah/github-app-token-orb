@@ -1,0 +1,4 @@
+description: Ruby executor used to generate GitHub App installation access tokens.
+
+docker:
+  - image: cimg/ruby:3.4.8

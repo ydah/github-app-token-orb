@@ -1,4 +1,0 @@
-description: Node.js executor used to generate GitHub App installation access tokens.
-
-docker:
-  - image: cimg/node:lts

@@ -8,7 +8,7 @@ usage:
   jobs:
     infer-installation:
       docker:
-        - image: cimg/node:lts
+        - image: cimg/ruby:3.4.8
       steps:
         - checkout
         - app-token/create:
